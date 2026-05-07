@@ -1,10 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
-  const router = useRouter()
   const [id, setId] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -19,10 +17,10 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, password }),
+        credentials: 'same-origin',
       })
       if (res.ok) {
-        router.push('/expeditions')
-        router.refresh()
+        window.location.href = '/expeditions'
       } else {
         const data = await res.json()
         setError(data.error ?? 'ログインに失敗しました')
@@ -35,7 +33,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-900 flex flex-col items-center justify-center px-6">
+    <div className="fixed inset-0 bg-blue-900 flex flex-col items-center justify-center px-6 overflow-y-auto">
       <div className="w-full max-w-sm">
         {/* ロゴ */}
         <div className="text-center mb-8">
