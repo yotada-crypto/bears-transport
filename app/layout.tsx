@@ -13,10 +13,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ja">
       <body className="bg-slate-50 text-slate-900 min-h-screen">
         <div className="max-w-lg mx-auto min-h-screen flex flex-col">
-          <LogoutButton />
           <main className="flex-1 pb-20">{children}</main>
           <Navigation />
         </div>
+        <LogoutButton />
       </body>
     </html>
   )

@@ -12,6 +12,7 @@ export default function DestinationSearch({ onRouteSelected }: Props) {
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const [selectedPlace, setSelectedPlace] = useState<PlaceSuggestion | null>(null)
   const [routes, setRoutes] = useState<{ highway: RouteOption | null; regular: RouteOption | null } | null>(null)
+  const [selectedRoute, setSelectedRoute] = useState<'highway' | 'regular' | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -56,6 +57,7 @@ export default function DestinationSearch({ onRouteSelected }: Props) {
     if (!routes || !selectedPlace) return
     const route = routes[type]
     if (!route) return
+    setSelectedRoute(type)
     onRouteSelected(selectedPlace.main_text, { ...route, type }, selectedPlace.description)
   }
 
@@ -63,6 +65,7 @@ export default function DestinationSearch({ onRouteSelected }: Props) {
     setInput('')
     setSelectedPlace(null)
     setRoutes(null)
+    setSelectedRoute(null)
     setError('')
     setSuggestions([])
   }
@@ -125,11 +128,15 @@ export default function DestinationSearch({ onRouteSelected }: Props) {
             <button
               type="button"
               onClick={() => handleRouteSelect('highway')}
-              className="w-full text-left rounded-xl border-2 border-blue-200 bg-blue-50 px-4 py-3 hover:border-blue-400 transition-colors"
+              className={`w-full text-left rounded-xl border-2 px-4 py-3 transition-colors ${
+                selectedRoute === 'highway'
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-slate-200 bg-white hover:border-blue-300'
+              }`}
             >
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-blue-800">🛣 高速道路利用</span>
-                <span className="text-blue-700 font-bold">{routes.highway.distance_km} km</span>
+                <span className={`font-semibold ${selectedRoute === 'highway' ? 'text-blue-800' : 'text-slate-700'}`}>🛣 高速道路利用</span>
+                <span className={`font-bold ${selectedRoute === 'highway' ? 'text-blue-700' : 'text-slate-700'}`}>{routes.highway.distance_km} km</span>
               </div>
             </button>
           )}
@@ -138,11 +145,15 @@ export default function DestinationSearch({ onRouteSelected }: Props) {
             <button
               type="button"
               onClick={() => handleRouteSelect('regular')}
-              className="w-full text-left rounded-xl border-2 border-slate-200 bg-slate-50 px-4 py-3 hover:border-slate-400 transition-colors"
+              className={`w-full text-left rounded-xl border-2 px-4 py-3 transition-colors ${
+                selectedRoute === 'regular'
+                  ? 'border-slate-500 bg-slate-100'
+                  : 'border-slate-200 bg-white hover:border-slate-400'
+              }`}
             >
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-slate-700">🛤 一般道路</span>
-                <span className="text-slate-700 font-bold">{routes.regular.distance_km} km</span>
+                <span className="font-bold text-slate-700">{routes.regular.distance_km} km</span>
               </div>
               <div className="text-xs text-slate-500 mt-1">高速料金なし</div>
             </button>

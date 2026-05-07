@@ -281,7 +281,7 @@ export default function NewExpeditionPage() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              placeholder="試合内容など"
+              placeholder="大会名など"
               className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:border-blue-500 focus:outline-none"
             />
           </div>
