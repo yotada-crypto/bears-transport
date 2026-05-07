@@ -18,3 +18,8 @@ body {
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* iOSの自動ズーム防止 */
+input, textarea, select {
+  font-size: 16px !important;
+}
