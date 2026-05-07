@@ -13,11 +13,13 @@ export default function LogoutButton() {
   }
 
   return (
-    <button
-      onClick={handleLogout}
-      className="absolute top-3 right-4 z-50 text-xs text-slate-400 hover:text-slate-600 active:text-slate-800 font-medium"
-    >
-      ログアウト
-    </button>
+    <div className="flex justify-end px-4 py-2">
+      <button
+        onClick={handleLogout}
+        className="text-xs text-slate-400 hover:text-slate-600 active:text-slate-800 font-medium"
+      >
+        ログアウト
+      </button>
+    </div>
   )
 }
