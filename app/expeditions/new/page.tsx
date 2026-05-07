@@ -234,15 +234,16 @@ export default function NewExpeditionPage() {
                     </div>
                     <div>
                       <label className="block text-xs text-slate-500 mb-1">ETC料金（片道）</label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">¥</span>
+                      <div className="flex items-center gap-1 rounded-lg border border-slate-300 px-3 py-2 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200">
+                        <span className="text-slate-500 text-sm">¥</span>
                         <input
                           type="number"
+                          inputMode="numeric"
                           value={tollOneWay}
                           onChange={(e) => setTollOneWay(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
                           min="0"
                           step="10"
-                          className="w-full rounded-lg border border-slate-300 pl-7 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                          className="flex-1 text-sm focus:outline-none bg-transparent"
                         />
                       </div>
                     </div>
