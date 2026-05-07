@@ -1,11 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { calcGasAmount, ceilToUnit, formatCurrency } from '@/lib/calculations'
 
 export default function SettingsPage() {
-  const router = useRouter()
   const [gasPrice, setGasPrice] = useState('15')
   const [localFee, setLocalFee] = useState('500')
   const [roundingUnit, setRoundingUnit] = useState('10')
@@ -222,16 +220,6 @@ export default function SettingsPage() {
             </button>
           </>
         )}
-
-        <button
-          onClick={async () => {
-            await fetch('/api/auth/logout', { method: 'POST' })
-            router.push('/login')
-          }}
-          className="w-full py-3 rounded-xl border border-slate-200 text-slate-500 text-sm font-medium"
-        >
-          ログアウト
-        </button>
 
         <div className="text-center text-xs text-slate-400 py-2">
           <p>⚾ Bears遠征費精算アプリ v1.0</p>
