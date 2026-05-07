@@ -29,8 +29,8 @@ export async function GET(request: Request) {
   const summaryMap: Record<string, MonthlyHouseholdSummary> = {}
 
   for (const row of data ?? []) {
-    const h = row.household as { id: string; name: string }
-    const exp = row.expedition as { id: string; date: string; destination: string }
+    const h = row.household as unknown as { id: string; name: string }
+    const exp = row.expedition as unknown as { id: string; date: string; destination: string }
     if (!h || !exp) continue
 
     if (!summaryMap[h.id]) {
