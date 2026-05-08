@@ -8,6 +8,7 @@ const navItems = [
   { href: '/monthly', label: '月次精算', icon: '📊' },
   { href: '/households', label: '配車登録', icon: '🚗' },
   { href: '/settings', label: '設定', icon: '⚙️' },
+  { href: '/help', label: '使い方', icon: '❓' },
 ]
 
 export default function Navigation() {
