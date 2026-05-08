@@ -2,7 +2,7 @@ export default function HelpPage() {
   return (
     <div>
       <header className="bg-blue-800 text-white px-4 pt-12 pb-4">
-        <h1 className="text-xl font-bold">マニュアル</h1>
+        <h1 className="text-xl font-bold">使い方</h1>
         <p className="text-blue-200 text-sm mt-0.5">Bears遠征費精算アプリの使い方</p>
       </header>
 
