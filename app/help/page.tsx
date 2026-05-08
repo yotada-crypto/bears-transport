@@ -2,7 +2,7 @@ export default function HelpPage() {
   return (
     <div>
       <header className="bg-blue-800 text-white px-4 pt-12 pb-4">
-        <h1 className="text-xl font-bold">❓ 使い方</h1>
+        <h1 className="text-xl font-bold">マニュアル</h1>
         <p className="text-blue-200 text-sm mt-0.5">Bears遠征費精算アプリの使い方</p>
       </header>
 
@@ -60,7 +60,7 @@ export default function HelpPage() {
 
         {/* FAQ */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
-          <h2 className="font-bold text-slate-800 mb-3">よくある質問</h2>
+          <h2 className="font-bold text-slate-800 mb-3">FAQ</h2>
           <div className="space-y-4 text-sm">
             {[
               {
