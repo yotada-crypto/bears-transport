@@ -122,7 +122,7 @@ export default function MonthlyPage() {
                           <div>
                             <p className="text-sm font-medium text-slate-800">{d.destination}</p>
                             <p className="text-xs text-slate-500 mt-0.5">{formatDate(d.expedition_date)}</p>
-                            <div className="flex gap-2 mt-1">
+                            <div className="flex gap-2 mt-1 flex-wrap">
                               <span className={`text-xs px-2 py-0.5 rounded-full ${
                                 d.trip_type === 'round_trip'
                                   ? 'bg-green-100 text-green-700'
@@ -133,6 +133,11 @@ export default function MonthlyPage() {
                               <span className="text-xs text-slate-400">
                                 ガス {formatCurrency(d.gas_amount)} + 高速 {formatCurrency(d.highway_amount)}
                               </span>
+                              {d.parking_amount > 0 && (
+                                <span className="text-xs text-purple-600">
+                                  + 駐車 {formatCurrency(d.parking_amount)}
+                                </span>
+                              )}
                             </div>
                           </div>
                           <span className="font-bold text-blue-700 text-sm">{formatCurrency(d.total_amount)}</span>

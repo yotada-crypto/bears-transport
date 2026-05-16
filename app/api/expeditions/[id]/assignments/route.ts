@@ -8,8 +8,12 @@ type Params = { params: Promise<{ id: string }> }
 export async function POST(request: Request, { params }: Params) {
   const { id: expedition_id } = await params
   const db = createServiceClient()
-  const { household_id, trip_type }: { household_id: string; trip_type: TripType } =
-    await request.json()
+  const { household_id, trip_type, parking_amount: parkingInput }: {
+    household_id: string
+    trip_type: TripType
+    parking_amount?: number
+  } = await request.json()
+  const parking_amount = parkingInput ?? 0
 
   const { data: expedition, error: expErr } = await db
     .from('expeditions')
@@ -33,19 +37,19 @@ export async function POST(request: Request, { params }: Params) {
       ? ceilToUnit(local_fee, roundingUnit)
       : ceilToUnit(local_fee / 2, roundingUnit)
     highway_amount = 0
-    total_amount = gas_amount
+    total_amount = ceilToUnit(gas_amount + parking_amount, roundingUnit)
   } else {
     gas_amount = calcGasAmount(expedition.distance_km, expedition.gas_price_per_km, trip_type)
     highway_amount = expedition.use_highway
       ? calcHighwayAmount(expedition.highway_toll_one_way, trip_type)
       : 0
-    total_amount = ceilToUnit(calcTotalAmount(gas_amount, highway_amount), roundingUnit)
+    total_amount = ceilToUnit(calcTotalAmount(gas_amount, highway_amount) + parking_amount, roundingUnit)
   }
 
   const { data, error } = await db
     .from('car_assignments')
     .upsert(
-      { expedition_id, household_id, trip_type, gas_amount, highway_amount, total_amount },
+      { expedition_id, household_id, trip_type, gas_amount, highway_amount, parking_amount, total_amount },
       { onConflict: 'expedition_id,household_id' }
     )
     .select(`*, household:households(*)`)

@@ -150,7 +150,8 @@ export default function SettingsPage() {
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
               <h2 className="font-semibold text-slate-700 mb-1">料金の切り上げ単位</h2>
               <p className="text-xs text-slate-400 mb-3">
-                支払い金額を指定した単位で切り上げます（四捨五入ではなく常に切り上げ）
+                支払い金額を指定した単位で切り上げます（四捨五入ではなく常に切り上げ）<br />
+                ※ 変更後に新規登録した配車から適用されます。過去の記録には影響しません。
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {[
@@ -184,7 +185,8 @@ export default function SettingsPage() {
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
               <h2 className="font-semibold text-slate-700 mb-1">ガソリン単価（区外用）</h2>
               <p className="text-xs text-slate-400 mb-3">
-                ガソリン代 = 距離 × 単価 × 2（往復）
+                ガソリン代 = 距離 × 単価 × 2（往復）<br />
+                ※ 変更後に新規登録した配車から適用されます。過去の記録には影響しません。
               </p>
               <div className="flex items-center gap-2">
                 <input

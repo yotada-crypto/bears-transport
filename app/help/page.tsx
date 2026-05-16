@@ -12,7 +12,7 @@ export default function HelpPage() {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <h2 className="font-bold text-slate-800 mb-2">このアプリでできること</h2>
           <p className="text-sm text-slate-600 leading-relaxed">
-            遠征の交通費（ガソリン代・高速代）を記録し、月ごとに家庭別の精算明細をPDFで出力できます。
+            遠征の交通費（ガソリン代・高速代・駐車場代）を記録し、月ごとに家庭別の精算明細をPDFで出力できます。
           </p>
           <div className="mt-3 bg-blue-50 rounded-xl px-4 py-3 text-sm text-blue-800 font-medium text-center">
             遠征を登録 → 配車を登録 → 月次精算でPDF出力
@@ -23,7 +23,7 @@ export default function HelpPage() {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <h2 className="font-bold text-slate-800 mb-3">🧳 遠征を登録する</h2>
           <ol className="space-y-2 text-sm text-slate-700">
-            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">1.</span>「遠征登録」タブ → 右上の「＋」をタップ</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">1.</span>「遠征一覧」タブ → 右上の「＋」をタップ</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">2.</span>日付を入力</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">3.</span><span><strong>区内 / 区外</strong>を選択<br /><span className="text-slate-500">区内：固定料金 / 区外：距離計算</span></span></li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">4.</span>区外の場合、遠征先を検索してルートを選択</li>
@@ -40,11 +40,23 @@ export default function HelpPage() {
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">1.</span>「配車登録」タブで車（家庭）をあらかじめ登録</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">2.</span>遠征一覧から対象の遠征をタップ</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">3.</span>「配車を追加」から車を選択し、往復 / 片道を設定</li>
-            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">4.</span>金額が自動で計算されます</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">4.</span>駐車場代がある場合は金額を入力（任意）</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">5.</span>金額が自動で計算されます</li>
           </ol>
           <div className="mt-3 bg-slate-50 rounded-xl px-3 py-2 text-xs text-slate-500">
             送り・迎え両方担当 → 往復　／　どちらか一方のみ → 片道（半額）
           </div>
+        </div>
+
+        {/* 駐車場代を登録・編集する */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
+          <h2 className="font-bold text-slate-800 mb-3">🅿️ 駐車場代を登録・編集する</h2>
+          <p className="text-sm text-slate-600 mb-3">駐車場代は配車ごとに個別に登録できます。登録後も後から追加・変更が可能です。</p>
+          <ol className="space-y-2 text-sm text-slate-700">
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">登録時</span>配車追加フォームの「駐車場代（任意）」欄に金額を入力</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">後日追加</span>配車カードの「編集」をタップ → 駐車場代欄に入力して保存</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">金額修正</span>同じく「編集」からガソリン代・高速代も上書き変更できます</li>
+          </ol>
         </div>
 
         {/* 月次精算 */}
@@ -53,7 +65,7 @@ export default function HelpPage() {
           <ol className="space-y-2 text-sm text-slate-700">
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">1.</span>「月次精算」タブをタップ</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">2.</span>年・月を選択</li>
-            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">3.</span>家庭ごとの支払い合計と遠征一覧が表示されます</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">3.</span>家庭ごとの支払い合計と遠征一覧が表示されます（駐車場代を含む）</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">4.</span>「PDFをダウンロード」で明細を保存・印刷</li>
           </ol>
         </div>
@@ -73,11 +85,15 @@ export default function HelpPage() {
               },
               {
                 q: '金額の計算方法は？',
-                a: 'ガソリン代 ＝ 距離（km）× ガソリン単価 × 2（往復）です。高速利用の場合はETC料金（往復）が加算されます。',
+                a: 'ガソリン代 ＝ 距離（km）× ガソリン単価 × 2（往復）です。高速利用の場合はETC料金（往復）が加算されます。駐車場代がある場合はさらに加算されます。',
+              },
+              {
+                q: '駐車場代を後から追加したい',
+                a: '遠征一覧から該当の遠征をタップ → 配車カードの「編集」をタップすると、駐車場代を入力・変更できます。',
               },
               {
                 q: '金額の端数はどうなる？',
-                a: '設定で指定した単位（1円・10円・100円）で切り上げされます。',
+                a: '設定で指定した単位（1円・10円・100円）で切り上げされます。駐車場代は入力した金額がそのまま加算されます。',
               },
               {
                 q: '設定を変えたい',
@@ -111,7 +127,7 @@ export default function HelpPage() {
         </div>
 
         <div className="text-center text-xs text-slate-400 py-2">
-          <p>⚾ Bears遠征費精算アプリ v1.0</p>
+          <p>⚾ Bears遠征費精算アプリ v1.1</p>
         </div>
       </div>
     </div>

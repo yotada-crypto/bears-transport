@@ -29,6 +29,7 @@ export interface CarAssignment {
   trip_type: TripType
   gas_amount: number
   highway_amount: number
+  parking_amount: number
   total_amount: number
   created_at: string
   household?: Household
@@ -50,6 +51,7 @@ export interface MonthlyDetail {
   trip_type: TripType
   gas_amount: number
   highway_amount: number
+  parking_amount: number
   total_amount: number
 }
 

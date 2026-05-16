@@ -16,10 +16,16 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
   const [showAddForm, setShowAddForm] = useState(false)
   const [selectedHousehold, setSelectedHousehold] = useState('')
   const [tripType, setTripType] = useState<TripType>('round_trip')
+  const [parkingAmount, setParkingAmount] = useState<number | ''>(0)
   const [adding, setAdding] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [editingAssignment, setEditingAssignment] = useState<string | null>(null)
+  const [editGasValue, setEditGasValue] = useState<number | ''>(0)
+  const [editHighwayValue, setEditHighwayValue] = useState<number | ''>(0)
+  const [editParkingValue, setEditParkingValue] = useState<number | ''>(0)
+  const [savingAssignment, setSavingAssignment] = useState(false)
 
   const load = async () => {
     const [expRes, hhRes, settingsRes] = await Promise.all([
@@ -42,13 +48,14 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
   const assignedIds = expedition?.car_assignments.map((a) => a.household_id) ?? []
   const availableHouseholds = households.filter((h) => !assignedIds.includes(h.id))
 
+  const parkingNum = parkingAmount === '' ? 0 : parkingAmount
   const previewTotal = expedition
     ? expedition.is_local
-      ? ceilToUnit(tripType === 'round_trip' ? localFee : localFee / 2, roundingUnit)
+      ? ceilToUnit((tripType === 'round_trip' ? localFee : localFee / 2) + parkingNum, roundingUnit)
       : ceilToUnit(calcTotalAmount(
           calcGasAmount(expedition.distance_km, expedition.gas_price_per_km, tripType),
           expedition.use_highway ? calcHighwayAmount(expedition.highway_toll_one_way, tripType) : 0
-        ), roundingUnit)
+        ) + parkingNum, roundingUnit)
     : 0
 
   const handleAdd = async () => {
@@ -59,12 +66,17 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
       const res = await fetch(`/api/expeditions/${id}/assignments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ household_id: selectedHousehold, trip_type: tripType }),
+        body: JSON.stringify({
+          household_id: selectedHousehold,
+          trip_type: tripType,
+          parking_amount: parkingAmount === '' ? 0 : parkingAmount,
+        }),
       })
       if (!res.ok) throw new Error((await res.json()).error)
       setShowAddForm(false)
       setSelectedHousehold('')
       setTripType('round_trip')
+      setParkingAmount(0)
       await load()
     } catch (e) {
       setError(e instanceof Error ? e.message : '追加に失敗しました')
@@ -80,6 +92,26 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
       await load()
     } finally {
       setDeleting(null)
+    }
+  }
+
+  const handleSaveAssignment = async (assignmentId: string) => {
+    setSavingAssignment(true)
+    try {
+      const res = await fetch(`/api/assignments/${assignmentId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gas_amount: editGasValue === '' ? 0 : editGasValue,
+          highway_amount: editHighwayValue === '' ? 0 : editHighwayValue,
+          parking_amount: editParkingValue === '' ? 0 : editParkingValue,
+        }),
+      })
+      if (!res.ok) throw new Error((await res.json()).error)
+      setEditingAssignment(null)
+      await load()
+    } finally {
+      setSavingAssignment(false)
     }
   }
 
@@ -185,7 +217,7 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-slate-900">{a.household?.name}号</p>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                           a.trip_type === 'round_trip'
                             ? 'bg-green-100 text-green-700'
@@ -200,6 +232,9 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                             ガス {formatCurrency(a.gas_amount)} + 高速 {formatCurrency(a.highway_amount)}
                           </span>
                         )}
+                        {a.parking_amount > 0 && (
+                          <span className="text-xs text-slate-400">+ 駐車 {formatCurrency(a.parking_amount)}</span>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -213,6 +248,62 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                       </button>
                     </div>
                   </div>
+
+                  {editingAssignment === a.id ? (
+                    <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
+                      <p className="text-xs font-medium text-slate-600">金額を編集</p>
+                      {[
+                        { label: 'ガソリン代', value: editGasValue, setter: setEditGasValue },
+                        { label: '高速代', value: editHighwayValue, setter: setEditHighwayValue },
+                        { label: '駐車場代', value: editParkingValue, setter: setEditParkingValue },
+                      ].map(({ label, value, setter }) => (
+                        <div key={label} className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 w-20 shrink-0">{label}</span>
+                          <div className="flex items-center gap-1 flex-1 rounded-xl border border-slate-300 px-3 py-2 focus-within:border-blue-500">
+                            <span className="text-slate-500 text-sm">¥</span>
+                            <input
+                              type="number"
+                              inputMode="numeric"
+                              value={value}
+                              onChange={(e) => setter(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
+                              min="0"
+                              step="10"
+                              className="flex-1 text-sm focus:outline-none bg-transparent"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          onClick={() => setEditingAssignment(null)}
+                          className="flex-1 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm"
+                        >
+                          取消
+                        </button>
+                        <button
+                          onClick={() => handleSaveAssignment(a.id)}
+                          disabled={savingAssignment}
+                          className="flex-1 py-2 rounded-xl bg-blue-700 text-white text-sm font-bold disabled:opacity-50"
+                        >
+                          保存
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <button
+                        onClick={() => {
+                          setEditingAssignment(a.id)
+                          setEditGasValue(a.gas_amount)
+                          setEditHighwayValue(a.highway_amount)
+                          setEditParkingValue(a.parking_amount)
+                        }}
+                        className="text-xs text-blue-500 font-medium"
+                      >
+                        編集
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -258,6 +349,23 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
               </div>
             </div>
 
+            <div>
+              <label className="block text-xs text-slate-600 mb-1">駐車場代（任意）</label>
+              <div className="flex items-center gap-1 rounded-xl border border-slate-300 px-3 py-3 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100 bg-white">
+                <span className="text-slate-500 text-sm">¥</span>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={parkingAmount}
+                  onChange={(e) => setParkingAmount(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
+                  min="0"
+                  step="10"
+                  placeholder="0"
+                  className="flex-1 text-base focus:outline-none bg-transparent"
+                />
+              </div>
+            </div>
+
             {selectedHousehold && (
               <div className="bg-white rounded-xl p-3 text-sm space-y-1 border border-slate-100">
                 {expedition.is_local ? (
@@ -266,6 +374,12 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                       <span className="text-slate-500">区内固定料金</span>
                       <span>{formatCurrency(ceilToUnit(tripType === 'round_trip' ? localFee : localFee / 2, roundingUnit))}</span>
                     </div>
+                    {parkingNum > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-purple-500">駐車場代</span>
+                        <span className="text-purple-600">{formatCurrency(parkingNum)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between font-bold text-blue-700 border-t pt-1 mt-1">
                       <span>支払額</span>
                       <span>{formatCurrency(previewTotal)}</span>
@@ -281,6 +395,12 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                       <div className="flex justify-between">
                         <span className="text-slate-500">高速代</span>
                         <span>{formatCurrency(calcHighwayAmount(expedition.highway_toll_one_way, tripType))}</span>
+                      </div>
+                    )}
+                    {parkingNum > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-purple-500">駐車場代</span>
+                        <span className="text-purple-600">{formatCurrency(parkingNum)}</span>
                       </div>
                     )}
                     <div className="flex justify-between font-bold text-blue-700 border-t pt-1 mt-1">

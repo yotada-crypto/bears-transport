@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   const { data, error } = await db
     .from('car_assignments')
     .select(`
-      id, trip_type, gas_amount, highway_amount, total_amount,
+      id, trip_type, gas_amount, highway_amount, parking_amount, total_amount,
       household:households(id, name),
       expedition:expeditions!inner(id, date, destination)
     `)
@@ -54,6 +54,7 @@ export async function GET(request: Request) {
       trip_type: row.trip_type,
       gas_amount: row.gas_amount,
       highway_amount: row.highway_amount,
+      parking_amount: row.parking_amount ?? 0,
       total_amount: row.total_amount,
     })
   }
