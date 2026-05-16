@@ -190,7 +190,7 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-slate-800">配車リスト</h2>
-            {availableHouseholds.length > 0 && (
+            {!showAddForm && availableHouseholds.length > 0 && (
               <button
                 onClick={() => setShowAddForm(true)}
                 className="text-sm text-blue-700 font-semibold"
@@ -200,120 +200,10 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
 
-          {expedition.car_assignments.length === 0 ? (
-            <div className="text-center py-8 text-slate-400 bg-slate-50 rounded-2xl">
-              <p>まだ配車が登録されていません</p>
-              <button
-                onClick={() => setShowAddForm(true)}
-                className="text-blue-600 font-medium mt-1 text-sm"
-              >
-                配車を追加する
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {expedition.car_assignments.map((a) => (
-                <div key={a.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-slate-900">{a.household?.name}号</p>
-                      <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          a.trip_type === 'round_trip'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-orange-100 text-orange-700'
-                        }`}>
-                          {a.trip_type === 'round_trip' ? '往復' : '片道'}
-                        </span>
-                        {expedition.is_local ? (
-                          <span className="text-xs text-slate-400">区内固定料金</span>
-                        ) : (
-                          <span className="text-xs text-slate-400">
-                            ガス {formatCurrency(a.gas_amount)} + 高速 {formatCurrency(a.highway_amount)}
-                          </span>
-                        )}
-                        {a.parking_amount > 0 && (
-                          <span className="text-xs text-slate-400">+ 駐車 {formatCurrency(a.parking_amount)}</span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-blue-700">{formatCurrency(a.total_amount)}</span>
-                      <button
-                        onClick={() => handleDeleteAssignment(a.id)}
-                        disabled={deleting === a.id}
-                        className="text-red-400 hover:text-red-600 text-xl leading-none"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  </div>
-
-                  {editingAssignment === a.id ? (
-                    <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
-                      <p className="text-xs font-medium text-slate-600">金額を編集</p>
-                      {[
-                        { label: 'ガソリン代', value: editGasValue, setter: setEditGasValue },
-                        { label: '高速代', value: editHighwayValue, setter: setEditHighwayValue },
-                        { label: '駐車場代', value: editParkingValue, setter: setEditParkingValue },
-                      ].map(({ label, value, setter }) => (
-                        <div key={label} className="flex items-center gap-2">
-                          <span className="text-xs text-slate-500 w-20 shrink-0">{label}</span>
-                          <div className="flex items-center gap-1 flex-1 rounded-xl border border-slate-300 px-3 py-2 focus-within:border-blue-500">
-                            <span className="text-slate-500 text-sm">¥</span>
-                            <input
-                              type="number"
-                              inputMode="numeric"
-                              value={value}
-                              onChange={(e) => setter(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
-                              min="0"
-                              step="10"
-                              className="flex-1 text-sm focus:outline-none bg-transparent"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                      <div className="flex gap-2 pt-1">
-                        <button
-                          onClick={() => setEditingAssignment(null)}
-                          className="flex-1 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm"
-                        >
-                          取消
-                        </button>
-                        <button
-                          onClick={() => handleSaveAssignment(a.id)}
-                          disabled={savingAssignment}
-                          className="flex-1 py-2 rounded-xl bg-blue-700 text-white text-sm font-bold disabled:opacity-50"
-                        >
-                          保存
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="mt-2">
-                      <button
-                        onClick={() => {
-                          setEditingAssignment(a.id)
-                          setEditGasValue(a.gas_amount)
-                          setEditHighwayValue(a.highway_amount)
-                          setEditParkingValue(a.parking_amount)
-                        }}
-                        className="text-xs text-blue-500 font-medium"
-                      >
-                        編集
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 追加フォーム */}
-        {showAddForm && (
-          <div className="bg-blue-50 rounded-2xl p-4 border border-blue-200 space-y-3">
-            <h3 className="font-semibold text-blue-800">配車を追加</h3>
+          {/* 追加フォーム（リストの上に表示） */}
+          {showAddForm && (
+          <div className="bg-blue-50 rounded-2xl p-4 border border-blue-200 space-y-3 mb-3">
+            <h3 className="font-semibold text-blue-800">家庭を追加</h3>
 
             <div>
               <label className="block text-xs text-slate-600 mb-1">家庭を選択</label>
@@ -430,7 +320,119 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
               </button>
             </div>
           </div>
-        )}
+          )}
+
+          {expedition.car_assignments.length === 0 ? (
+            <div className="text-center py-8 text-slate-400 bg-slate-50 rounded-2xl">
+              <p>まだ配車が登録されていません</p>
+              {!showAddForm && (
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="text-blue-600 font-medium mt-1 text-sm"
+                >
+                  家庭を追加する
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {expedition.car_assignments.map((a) => (
+                <div key={a.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-slate-900">{a.household?.name}号</p>
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          a.trip_type === 'round_trip'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-orange-100 text-orange-700'
+                        }`}>
+                          {a.trip_type === 'round_trip' ? '往復' : '片道'}
+                        </span>
+                        {expedition.is_local ? (
+                          <span className="text-xs text-slate-400">区内固定料金</span>
+                        ) : (
+                          <span className="text-xs text-slate-400">
+                            ガス {formatCurrency(a.gas_amount)} + 高速 {formatCurrency(a.highway_amount)}
+                          </span>
+                        )}
+                        {a.parking_amount > 0 && (
+                          <span className="text-xs text-slate-400">+ 駐車 {formatCurrency(a.parking_amount)}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-blue-700">{formatCurrency(a.total_amount)}</span>
+                      <button
+                        onClick={() => handleDeleteAssignment(a.id)}
+                        disabled={deleting === a.id}
+                        className="text-red-400 hover:text-red-600 text-xl leading-none"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+
+                  {editingAssignment === a.id ? (
+                    <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
+                      <p className="text-xs font-medium text-slate-600">金額を編集</p>
+                      {[
+                        { label: 'ガソリン代', value: editGasValue, setter: setEditGasValue },
+                        { label: '高速代', value: editHighwayValue, setter: setEditHighwayValue },
+                        { label: '駐車場代', value: editParkingValue, setter: setEditParkingValue },
+                      ].map(({ label, value, setter }) => (
+                        <div key={label} className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500 w-20 shrink-0">{label}</span>
+                          <div className="flex items-center gap-1 flex-1 rounded-xl border border-slate-300 px-3 py-2 focus-within:border-blue-500">
+                            <span className="text-slate-500 text-sm">¥</span>
+                            <input
+                              type="number"
+                              inputMode="numeric"
+                              value={value}
+                              onChange={(e) => setter(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
+                              min="0"
+                              step="10"
+                              className="flex-1 text-sm focus:outline-none bg-transparent"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          onClick={() => setEditingAssignment(null)}
+                          className="flex-1 py-2 rounded-xl border border-slate-300 text-slate-600 text-sm"
+                        >
+                          取消
+                        </button>
+                        <button
+                          onClick={() => handleSaveAssignment(a.id)}
+                          disabled={savingAssignment}
+                          className="flex-1 py-2 rounded-xl bg-blue-700 text-white text-sm font-bold disabled:opacity-50"
+                        >
+                          保存
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <button
+                        onClick={() => {
+                          setEditingAssignment(a.id)
+                          setEditGasValue(a.gas_amount)
+                          setEditHighwayValue(a.highway_amount)
+                          setEditParkingValue(a.parking_amount)
+                        }}
+                        className="text-xs text-blue-500 font-medium"
+                      >
+                        編集
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* 削除 */}
         <div className="pt-4 border-t border-slate-200">
