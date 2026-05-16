@@ -248,6 +248,8 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                   inputMode="numeric"
                   value={parkingAmount}
                   onChange={(e) => setParkingAmount(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
+                  onFocus={() => { if (parkingAmount === 0) setParkingAmount('') }}
+                  onBlur={() => { if (parkingAmount === '') setParkingAmount(0) }}
                   min="0"
                   step="10"
                   placeholder="0"
@@ -390,6 +392,8 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                               inputMode="numeric"
                               value={value}
                               onChange={(e) => setter(e.target.value === '' ? '' : parseInt(e.target.value) || 0)}
+                              onFocus={() => { if (value === 0) setter('') }}
+                              onBlur={() => { if (value === '') setter(0) }}
                               min="0"
                               step="10"
                               className="flex-1 text-sm focus:outline-none bg-transparent"
