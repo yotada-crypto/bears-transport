@@ -74,7 +74,7 @@ export default function MonthlyPage() {
           <div className="text-center py-12 text-slate-400">読み込み中...</div>
         ) : summaries.length === 0 ? (
           <div className="text-center py-12 text-slate-400">
-            <p className="text-3xl mb-2">📭</p>
+            <p className="text-4xl mb-3">🚗</p>
             <p>この月の記録はありません</p>
           </div>
         ) : (

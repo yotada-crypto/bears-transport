@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import type { ExpeditionWithAssignments } from '@/types'
 import { formatDate, formatCurrency, formatYearMonth } from '@/lib/calculations'
 
@@ -57,8 +56,8 @@ export default function ExpeditionsPage() {
       <header className="bg-blue-800 text-white px-4 pt-12 pb-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <Image src="/bears-logo.png" alt="Bears" width={120} height={48} priority />
-            <p className="text-blue-200 text-sm mt-1">遠征費精算アプリ</p>
+            <h1 className="text-xl font-bold">⚾ Bears遠征費精算アプリ</h1>
+            <p className="text-blue-200 text-sm mt-0.5">遠征一覧</p>
           </div>
           <Link
             href="/expeditions/new"
@@ -84,11 +83,8 @@ export default function ExpeditionsPage() {
           <div className="text-center py-12 text-slate-400">読み込み中...</div>
         ) : expeditions.length === 0 ? (
           <div className="text-center py-12 text-slate-400">
-            <p className="text-4xl mb-3">⚾</p>
+            <p className="text-4xl mb-3">🚗</p>
             <p>この月の遠征はありません</p>
-            <Link href="/expeditions/new" className="text-blue-600 font-medium mt-2 block">
-              遠征を登録する →
-            </Link>
           </div>
         ) : (
           expeditions.map((exp) => (

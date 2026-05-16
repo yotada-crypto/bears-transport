@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 
 export default function LoginPage() {
   const [id, setId] = useState('')
@@ -38,9 +37,8 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* ロゴ */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-2">
-            <Image src="/bears-logo.png" alt="Bears" width={220} height={90} priority />
-          </div>
+          <div className="text-6xl mb-3">⚾</div>
+          <h1 className="text-2xl font-bold text-white">Bears</h1>
           <p className="text-blue-300 text-sm mt-1">遠征費精算アプリ</p>
         </div>
 
