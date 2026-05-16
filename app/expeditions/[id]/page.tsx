@@ -19,6 +19,7 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
   const [parkingAmount, setParkingAmount] = useState<number | ''>(0)
   const [adding, setAdding] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [editingAssignment, setEditingAssignment] = useState<string | null>(null)
@@ -366,7 +367,7 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-blue-700">{formatCurrency(a.total_amount)}</span>
                       <button
-                        onClick={() => handleDeleteAssignment(a.id)}
+                        onClick={() => { setDeleteConfirmId(a.id); setEditingAssignment(null) }}
                         disabled={deleting === a.id}
                         className="text-red-400 hover:text-red-600 text-xl leading-none"
                       >
@@ -375,7 +376,26 @@ export default function ExpeditionDetailPage({ params }: { params: Promise<{ id:
                     </div>
                   </div>
 
-                  {editingAssignment === a.id ? (
+                  {deleteConfirmId === a.id ? (
+                    <div className="mt-3 pt-3 border-t border-red-100 flex items-center justify-between gap-2">
+                      <p className="text-sm text-red-600 font-medium">削除しますか？</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setDeleteConfirmId(null)}
+                          className="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 text-sm"
+                        >
+                          キャンセル
+                        </button>
+                        <button
+                          onClick={() => { setDeleteConfirmId(null); handleDeleteAssignment(a.id) }}
+                          disabled={deleting === a.id}
+                          className="px-3 py-1.5 rounded-lg bg-red-600 text-white text-sm font-bold disabled:opacity-50"
+                        >
+                          削除
+                        </button>
+                      </div>
+                    </div>
+                  ) : editingAssignment === a.id ? (
                     <div className="mt-3 pt-3 border-t border-slate-100 space-y-2">
                       <p className="text-xs font-medium text-slate-600">金額を編集</p>
                       {[
