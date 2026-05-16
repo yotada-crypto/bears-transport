@@ -49,7 +49,7 @@ export default function HouseholdsPage() {
   return (
     <div>
       <header className="bg-blue-800 text-white px-4 pt-12 pb-4">
-        <h1 className="text-xl font-bold">🚗 配車登録</h1>
+        <h1 className="text-xl font-bold">🚗 車登録</h1>
         <p className="text-blue-200 text-sm mt-0.5">車出しできる家庭を登録してください</p>
       </header>
 

@@ -37,7 +37,7 @@ export default function HelpPage() {
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-4">
           <h2 className="font-bold text-slate-800 mb-3">🚗 配車を登録する</h2>
           <ol className="space-y-2 text-sm text-slate-700">
-            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">1.</span>「配車登録」タブで車（家庭）をあらかじめ登録</li>
+            <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">1.</span>「車登録」タブで車（家庭）をあらかじめ登録</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">2.</span>遠征一覧から対象の遠征をタップ</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">3.</span>「配車を追加」から車を選択し、往復 / 片道を設定</li>
             <li className="flex gap-2"><span className="font-bold text-blue-700 shrink-0">4.</span>駐車場代がある場合は金額を入力（任意）</li>

@@ -2,13 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Luggage, ReceiptText, Car, BookOpen, SlidersHorizontal } from 'lucide-react'
 
 const navItems = [
-  { href: '/expeditions', label: '遠征一覧', icon: '🧳' },
-  { href: '/monthly', label: '月次精算', icon: '📊' },
-  { href: '/households', label: '車登録', icon: '🚗' },
-  { href: '/settings', label: '設定', icon: '⚙️' },
-  { href: '/help', label: '使い方', icon: '📖' },
+  { href: '/expeditions', label: '遠征一覧', Icon: Luggage },
+  { href: '/monthly', label: '月次精算', Icon: ReceiptText },
+  { href: '/households', label: '車登録', Icon: Car },
+  { href: '/help', label: '使い方', Icon: BookOpen },
+  { href: '/settings', label: '設定', Icon: SlidersHorizontal },
 ]
 
 export default function Navigation() {
@@ -19,7 +20,7 @@ export default function Navigation() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 safe-bottom z-50">
       <div className="max-w-lg mx-auto flex">
-        {navItems.map(({ href, label, icon }) => {
+        {navItems.map(({ href, label, Icon }) => {
           const active = pathname.startsWith(href)
           return (
             <Link
@@ -29,7 +30,7 @@ export default function Navigation() {
                 active ? 'text-blue-700' : 'text-slate-400'
               }`}
             >
-              <span className="text-xl">{icon}</span>
+              <Icon size={22} strokeWidth={active ? 2.2 : 1.8} />
               <span>{label}</span>
             </Link>
           )
