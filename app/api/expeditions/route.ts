@@ -1,12 +1,26 @@
 import { NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const year = searchParams.get('year')
+  const month = searchParams.get('month')
+
   const db = createServiceClient()
-  const { data, error } = await db
+  let query = db
     .from('expeditions')
     .select(`*, car_assignments(*, household:households(*))`)
     .order('date', { ascending: false })
+
+  if (year && month) {
+    const y = parseInt(year)
+    const m = parseInt(month)
+    const startDate = `${y}-${String(m).padStart(2, '0')}-01`
+    const endDate = m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, '0')}-01`
+    query = query.gte('date', startDate).lt('date', endDate)
+  }
+
+  const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
 }
