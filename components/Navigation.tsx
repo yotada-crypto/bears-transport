@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 const navItems = [
   { href: '/expeditions', label: '遠征一覧', icon: '🧳' },
   { href: '/monthly', label: '月次精算', icon: '📊' },
-  { href: '/households', label: '配車登録', icon: '🚗' },
+  { href: '/households', label: '車登録', icon: '🚗' },
   { href: '/settings', label: '設定', icon: '⚙️' },
   { href: '/help', label: '使い方', icon: '📖' },
 ]
