@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { ExpeditionWithAssignments } from '@/types'
 import { formatDate, formatCurrency, formatYearMonth } from '@/lib/calculations'
 
@@ -56,8 +57,8 @@ export default function ExpeditionsPage() {
       <header className="bg-blue-800 text-white px-4 pt-12 pb-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h1 className="text-xl font-bold">⚾ Bears遠征費精算アプリ</h1>
-            <p className="text-blue-200 text-sm mt-0.5">遠征一覧</p>
+            <Image src="/bears-logo.png" alt="Bears" width={120} height={48} priority />
+            <p className="text-blue-200 text-sm mt-1">遠征費精算アプリ</p>
           </div>
           <Link
             href="/expeditions/new"
